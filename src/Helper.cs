@@ -81,10 +81,32 @@ namespace AspNetMvcUrlHelper
             }
         }
 
+        public static ActionResult RedirectToAction<TController>(this TController controller, Expression<Func<TController, ActionResult>> location)
+        {
+            var data = GetRouteData(location);
+            return new RedirectToRouteResult(data);
+        }
+        public static ActionResult RedirectToAction<TController>(this Controller controller, Expression<Func<TController, ActionResult>> location)
+        {
+            var data = GetRouteData(location);
+            return new RedirectToRouteResult(data);
+        }
+
         public static string Action<TController>(this UrlHelper url, Expression<Func<TController, ActionResult>> location)
         {
             var data = GetRouteData(location);
             return url.Action(data["action"].ToString(), data);
+        }
+
+        public static MvcHtmlString Action<TController>(this HtmlHelper html,Expression<Func<TController,ActionResult>> location)
+        {
+            var data = GetRouteData<TController>(location);
+            return html.Action(data["action"].ToString(), data);
+        }
+        public static void RenderAction<TController>(this HtmlHelper html,Expression<Func<TController,ActionResult>> location)
+        {
+            var data = GetRouteData<TController>(location);
+            html.RenderAction(data["action"].ToString(), data);
         }
 
     }

@@ -23,7 +23,7 @@ namespace TestUnit
                 "hello",                        //ConstantExpression
                 tmp.Length,                     //MemberExpression
                 new StringBuilder(),            //NewExpression
-                tmp2[1],                        //IndexExpression
+                tmp2[1],                        //IndexExpression   Unhandle expression
                 (object)tmp.Length,             //UnaryExpression (Convert)
                 new int[] {1,2,3,4,5,6}[5]      //UnhandleExpression shuld Complie
             );
