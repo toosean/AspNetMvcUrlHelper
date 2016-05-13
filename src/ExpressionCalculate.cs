@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -33,11 +34,31 @@ namespace AspNetMvcUrlHelper
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("using LambdaExpression.Compile",nameof(ExpressionCalculate));
+                return CompileAndInvoke(expression);
+            }
+        }
 
-                return Expression.Lambda(expression)
+        protected object CompileAndInvoke(Expression expression)
+        {
+            try
+            {
+
+                var stopWatch = new Stopwatch();
+                stopWatch.Start();
+
+                var result = Expression.Lambda(expression)
                     .Compile()
                     .DynamicInvoke();
+
+                stopWatch.Stop();
+
+                Debug.WriteLine($"using LambdaExpression.Compile [{expression.NodeType}] delay:{stopWatch.ElapsedMilliseconds} ms", nameof(AspNetMvcUrlHelper));
+
+                return result;
+            }
+            catch(Exception ex)
+            {
+                throw new NotSupportedException($"无法计算 {expression} 的值。", ex);
             }
         }
 
@@ -66,13 +87,28 @@ namespace AspNetMvcUrlHelper
                 return ((FieldInfo)expression.Member).GetValue(Calculate(expression.Expression));
             }
 
-            throw new NotSupportedException($"不支持 {expression.NodeType} 类型的表达式。");
+            return CompileAndInvoke(expression);
 
         }
 
         protected object Calculate(NewExpression expression)
         {
             return expression.Constructor.Invoke(expression.Arguments.Select(s => Calculate(s)).ToArray());
+        }
+
+        protected object Calculate(BinaryExpression expression)
+        {
+            if(expression.NodeType== ExpressionType.ArrayIndex)
+            {
+                var array = Calculate(expression.Left);
+                var indexer = Calculate(expression.Right);
+                return array.GetType()
+                    .GetMethod("GetValue", new Type[] { indexer.GetType() })
+                    .Invoke(array, new object[] { indexer });
+            }else
+            {
+                return CompileAndInvoke(expression);
+            }
         }
 
         protected object Calculate(IndexExpression expression)
@@ -93,7 +129,7 @@ namespace AspNetMvcUrlHelper
                 return Calculate(expression.Operand);
             }
 
-            throw new NotSupportedException($"不支持 {expression.NodeType} 类型的表达式。");
+            return CompileAndInvoke(expression);
         }
 
         protected object Calculate(LambdaExpression expression)

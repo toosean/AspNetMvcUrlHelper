@@ -23,9 +23,10 @@ namespace TestUnit
                 "hello",                        //ConstantExpression
                 tmp.Length,                     //MemberExpression
                 new StringBuilder(),            //NewExpression
-                tmp2[1],                        //IndexExpression   Unhandle expression
+                tmp2[1],                        //IndexExpression
                 (object)tmp.Length,             //UnaryExpression (Convert)
-                new int[] {1,2,3,4,5,6}[5]      //UnhandleExpression shuld Complie
+                new int[] {1,2,3,4,5,6}[5],     //BinaryExpression (IndexAccess),
+                100 > 200                       //UnhandleExpression
             );
 
             var args = (e.Body as MethodCallExpression).Arguments;
@@ -43,7 +44,7 @@ namespace TestUnit
         [TestMethod]
         public void TestGetRoute()
         {
-            var route = Extension.GetRouteData<MockController>(p => p.ManyArgs(1, 2, 3, 4, 5, 6));
+            var route = Extension.GetRouteData<MockController>(p => p.ManyArgs(1, 2, 3, 4, 5, 6, 7));
 
             Assert.AreEqual("MockArea", route["area"]);
             Assert.AreEqual("Mock", route["controller"]);
@@ -55,6 +56,7 @@ namespace TestUnit
             Assert.AreEqual(4, route["d"]);
             Assert.AreEqual(5, route["e"]);
             Assert.AreEqual(6, route["f"]);
+            Assert.AreEqual(7, route["g"]);
 
         }
     }

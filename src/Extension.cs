@@ -95,18 +95,25 @@ namespace AspNetMvcUrlHelper
         public static string Action<TController>(this UrlHelper url, Expression<Func<TController, ActionResult>> location)
         {
             var data = GetRouteData(location);
-            return url.Action(data["action"].ToString(), data);
+            return url.Action(data.GetAction(), data);
+        }
+
+        public static string ActionUrl<TController>(this TController controller, Expression<Func<TController, ActionResult>> location)
+            where TController : Controller
+        {
+            var data = GetRouteData(location);
+            return controller.Url.Action(data.GetAction(), data);
         }
 
         public static MvcHtmlString Action<TController>(this HtmlHelper html,Expression<Func<TController,ActionResult>> location)
         {
-            var data = GetRouteData<TController>(location);
-            return html.Action(data["action"].ToString(), data);
+            var data = GetRouteData(location);
+            return html.Action(data.GetAction().ToString(), data);
         }
         public static void RenderAction<TController>(this HtmlHelper html,Expression<Func<TController,ActionResult>> location)
         {
-            var data = GetRouteData<TController>(location);
-            html.RenderAction(data["action"].ToString(), data);
+            var data = GetRouteData(location);
+            html.RenderAction(data.GetAction().ToString(), data);
         }
 
     }
