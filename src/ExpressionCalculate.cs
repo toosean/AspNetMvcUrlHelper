@@ -15,6 +15,8 @@ namespace AspNetMvcUrlHelper
 
         public object Calculate(Expression expression)
         {
+            if (expression == null) return null;
+
             if (_methods == null)
             {
                 _methods = GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
