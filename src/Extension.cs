@@ -47,38 +47,34 @@ namespace AspNetMvcUrlHelper
 
         public static RouteValueDictionary GetRouteData<TController>(Expression<Func<TController, ActionResult>> location)
         {
-            if (location.Body is MethodCallExpression)
+            if (location.Body is MethodCallExpression) throw new ArgumentException(nameof(location));
+            
+            var expression = (MethodCallExpression)location.Body;
+            var methodParameters = expression.Method.GetParameters();
+            var routeData = new Dictionary<string, object>();
+
+            for (var i = 0; i < methodParameters.Count(); i++)
             {
-                var expression = (MethodCallExpression)location.Body;
-                var methodParameters = expression.Method.GetParameters();
-                var routeData = new Dictionary<string, object>();
+                var arg = expression.Arguments[i];
 
-                for (var i = 0; i < methodParameters.Count(); i++)
-                {
-                    var arg = expression.Arguments[i];
-
-                    object val = calculte.Calculate(arg);
-                    routeData.Add(methodParameters[i].Name, val);
-                }
-
-                var result = GetRoute<TController>(expression.Method);
-                foreach(var item in routeData)
-                {
-                    if (result.ContainsKey(item.Key))
-                    {
-                        result[item.Key] = item.Value;
-                    }else
-                    {
-                        result.Add(item.Key, item.Value);
-                    }
-                }
-
-                return result;
+                object val = calculte.Calculate(arg);
+                routeData.Add(methodParameters[i].Name, val);
             }
-            else
+
+            var result = GetRoute<TController>(expression.Method);
+            foreach(var item in routeData)
             {
-                throw new ArgumentException(nameof(location));
+                if (result.ContainsKey(item.Key))
+                {
+                    result[item.Key] = item.Value;
+                }else
+                {
+                    result.Add(item.Key, item.Value);
+                }
             }
+
+            return result;
+            
         }
 
         public static ActionResult RedirectToAction<TController>(this TController controller, Expression<Func<TController, ActionResult>> location)
