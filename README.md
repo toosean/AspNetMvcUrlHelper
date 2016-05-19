@@ -21,3 +21,37 @@ var url = Url.Action<SomeController>(p=>p.Index());
 var word = "sean";
 var url = Url.Action<SomeController>(p=>p.Search(word));
 ```
+#HtmlHelper
+```cs
+//before
+Html.Action("Search","Some",new {word="sean"});
+//after
+Html.Action<SomeController>(p=>p.Search("sean"));
+
+//before
+Html.RenderAction("Search","Some",new {word="sean"});
+//after
+Html.RenderAction<SomeController>(p=>p.Search("sean"));
+```
+
+#UrlHelper
+```cs
+//before
+Url.Action("Search","Some",new {word="sean"});
+//after
+Url.Action<SomeController>(p=>p.Search("sean"));
+```
+
+#Code in action
+```cs
+//new method (some as Url.Action)
+this.ActionUrl<SomeController>(p=>p.Search("sean"));
+
+//before
+this.RedirectToAction("Search","Some",new {word="sean"});
+//after
+this.RedirectToAction<SomeController>(p=>p.Search("sean"));
+
+//if just redirect action in some controller 
+this.RedirectToAction(p=>p.Search("sean"));
+```
