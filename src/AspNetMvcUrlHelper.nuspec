@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/toosean/AspNetMvcUrlHelper</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>release 1.0.0.2</releaseNotes>
+    <releaseNotes>release 1.0.1</releaseNotes>
     <copyright>Copyright 2016</copyright>
     <tags>ASP.NET MVC URL Route Helper</tags>
   </metadata>
