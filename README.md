@@ -44,7 +44,7 @@ Url.Action<SomeController>(p=>p.Search("sean"));
 
 #Code in action
 ```cs
-//new method (some as Url.Action)
+//new method (same as Url.Action)
 this.ActionUrl<SomeController>(p=>p.Search("sean"));
 
 //before
@@ -52,6 +52,6 @@ this.RedirectToAction("Search","Some",new {word="sean"});
 //after
 this.RedirectToAction<SomeController>(p=>p.Search("sean"));
 
-//if just redirect action in some controller 
+//if just redirect action in same controller 
 this.RedirectToAction(p=>p.Search("sean"));
 ```
