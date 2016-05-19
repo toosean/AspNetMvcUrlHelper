@@ -47,7 +47,7 @@ namespace AspNetMvcUrlHelper
 
         public static RouteValueDictionary GetRouteData<TController>(Expression<Func<TController, ActionResult>> location)
         {
-            if (location.Body is MethodCallExpression) throw new ArgumentException(nameof(location));
+            if (!(location.Body is MethodCallExpression)) throw new ArgumentException(nameof(location));
             
             var expression = (MethodCallExpression)location.Body;
             var methodParameters = expression.Method.GetParameters();
